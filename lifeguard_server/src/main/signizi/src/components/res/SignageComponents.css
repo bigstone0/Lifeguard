@@ -1,0 +1,89 @@
+.SignageComponents{
+    border: 1px solid black;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.ButtonDoorStateOpen{
+    background-color: rgba(97,239,126,0.31);
+    border: 2px solid #3862F9;
+    color: #3862F9;
+    border-radius: 2rem;
+    width: 6rem;
+    height: 75%;
+    font-size: 1rem;
+    margin: 3%;
+    display: flex; /*Flexbox 사용*/
+    justify-content: center; /* 가로 방향으로 중앙 정 */
+    align-items: center; /* 세로 방향으로 중앙 정렬 */
+}
+
+
+.ButtonDoorStateClosed{
+    background-color: rgba(97,239,126,0.31);
+    border: 2px solid red;
+    color: red;
+    border-radius: 1rem;
+    width: 6rem;
+    height: 75%;
+    margin: 3%;
+    font-size: 1rem;
+    display: flex; /*Flexbox 사용*/
+    justify-content: center; /* 가로 방향으로 중앙 정 */
+    align-items: center; /* 세로 방향으로 중앙 정렬 */
+}
+
+.ButtonInnerStateVacant{
+    background-color: rgba(244, 249, 1,0.22);
+    border: 2px solid #18AA5B;
+    color: #18AA5B;
+    border-radius: 2rem;
+    margin: 3%;
+    width: 6rem;
+    height: 75%;
+    font-size: 1rem;
+    display: flex; /*Flexbox 사용*/
+    justify-content: center; /* 가로 방향으로 중앙 정 */
+    align-items: center; /* 세로 방향으로 중앙 정렬 */
+}
+
+.ButtonInnerStateOccupied{
+    background-color: rgba(244, 249, 1,0.22);
+    border: 2px solid red;
+    color: red;
+    border-radius: 1rem;
+    width: 6rem;
+    height: 75%;
+    margin: 3%;
+    font-size: 1rem;
+    display: flex; /*Flexbox 사용*/
+    justify-content: center; /* 가로 방향으로 중앙 정 */
+    align-items: center; /* 세로 방향으로 중앙 정렬 */
+}
+
+.SignageComponents .Horizontal .ButtonBlueShort{
+    margin: 3%;
+    width: 6rem;
+    border-radius: 2rem;
+}
+
+.SignageComponents .Horizontal{
+    width: 80%;
+    height: 2.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); */
+}
+
+.SignageComponents .Name{
+    font-size: 1.5rem;
+    margin-top: 2%;
+    
+}

@@ -1,0 +1,28 @@
+.SignUp>.Horizontal{
+    height: 100;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* background-color: red; */
+}
+
+.SignUp>.Horizontal>.Vertical{
+    margin: 0%;
+    
+}
+
+.SignUp>.Horizontal>.Vertical>.input{
+    width: 80%;
+    margin-top: 0rem;
+    margin-left: auto;
+    margin-right: auto;
+    /* box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); */
+}
+.SignUp .ButtonBlueLong{
+    width: 30%;
+    height: 2rem;
+    margin: auto;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+   
+}

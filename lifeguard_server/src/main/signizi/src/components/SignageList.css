@@ -1,0 +1,26 @@
+
+
+.SignageComponents{
+    margin: 3%;
+}
+
+.SignageComponents>.Horizontal{
+    box-shadow: none;
+    width: 80%;
+    height: 2.5rem;
+    margin: 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.SignageList>.ButtonRed {
+    display: block;
+    width: 30%;
+    height: 4rem;
+    margin: 2rem auto;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+

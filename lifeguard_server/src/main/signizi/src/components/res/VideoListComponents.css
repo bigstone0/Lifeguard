@@ -1,0 +1,18 @@
+.VideoListComponents{
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.VideoName{
+    font-size: 1rem;
+    flex: 1;
+    text-align: left;
+}
+
+.ReserveTime{
+    font-size: 1rem;
+    flex: 1;
+    text-align: right;
+}

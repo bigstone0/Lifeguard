@@ -1,0 +1,36 @@
+
+.ListContainer {
+    height: 15rem;
+    max-height: 13rem; /* 원하는 높이를 설정하세요. */
+    overflow-y: auto; /* 수직 스크롤바를 활성화합니다. */
+    border: 2px solid black;
+}
+.ListContainer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ListItem {
+    border: 0.5px solid black;
+    display: flex;
+    justify-content: center;
+}
+.ListItemTitle{
+    font-size: 0.8rem;
+    flex:1;
+    display: flex;
+    justify-content: flex-start;
+    
+}
+.ListItemReserve{
+    font-size: 0.8rem;
+    flex:1;
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+
+  
+  
