@@ -4266,6 +4266,13 @@ expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
+expo-camera@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-13.6.0.tgz#a38537f474da4073ca4c19b5551e5178be5c899e"
+  integrity sha512-8lxK15D2tuEZom9bhDMMqNPW+5241Ak4wIup/ebh4JekgOtSQ/egbq7qDn2FCFi+5vPFKX4nRsvGOuzfuzvmZA==
+  dependencies:
+    invariant "^2.2.4"
+
 extend-shallow@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-2.0.1.tgz#51af7d614ad9a9f610ea1bafbb989d6b1c56890f"

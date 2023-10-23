@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
+import {Camera} from 'expo-camera';
 
 // const Tab = createMaterialBottomTabNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -57,10 +58,12 @@ async function requestPermissions() {
   }
 }
 
-const Signizi = ({route}: {route: any}) => {
+const Signizi = ({route, navigation}: any) => {
   requestPermissions();
   const {lat, lng, name, doorstate, innerstate} = route.params;
   const [door, setdoor] = React.useState(doorstate);
+  const [btState, setbtState] = React.useState(true);
+  const [btStyle, setbtStyle] = React.useState(styles.disabledStatus);
 
   const [location, setLocation] = React.useState<ILocation | undefined>(
     undefined,
@@ -68,9 +71,21 @@ const Signizi = ({route}: {route: any}) => {
 
   const [modalVisible, setModalVisible] = React.useState(true);
 
+  // const openCameraHandler = async () => {
+  //   const {status} = await Camera.requestCameraPermissionsAsync();
+
+  //   if (status == 'granted') {
+  //   }
+  // };
+
   React.useEffect(() => {
     console.log(lat, lng);
   });
+
+  const btnDisabled = () => {
+    setbtState(false);
+    setbtStyle(styles.status);
+  };
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Switch = () => {
@@ -153,7 +168,10 @@ const Signizi = ({route}: {route: any}) => {
             style={[styles.pill, styles.closePillPosition]}
             onPress={() => setModalVisible(!modalVisible)}></TouchableOpacity>
           <View style={styles.ourier1}>
-            <TouchableOpacity style={styles.status} onPress={Switch}>
+            <TouchableOpacity
+              style={btStyle}
+              onPress={Switch}
+              disabled={btState}>
               <Buttons stat={door} />
             </TouchableOpacity>
             <Text style={[styles.text, styles.textTypo]}>{name}</Text>
@@ -170,6 +188,16 @@ const Signizi = ({route}: {route: any}) => {
               resizeMode="cover"
               source={require('../assets/photo.png')}
             />
+            <TouchableOpacity
+              style={[styles.qrIcon, styles.qrIconLayout]}
+              onPress={btnDisabled}
+              disabled={!btState}>
+              <Image
+                style={styles.qrIconLayout}
+                source={require('../assets/QRcode.png')}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
             <Text style={[styles.daeseokSim, styles.qrTypo]}>Daeseok Sim</Text>
           </View>
         </View>
@@ -225,7 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   barPosition: {
-    top: windowHeight - 240,
+    top: windowHeight - 340,
   },
   closePillPosition: {
     top: 5,
@@ -310,44 +338,8 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
   },
-  status100: {
-    top: 90,
-    backgroundColor: Color.honeydew,
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'center',
-    height: 30,
-    width: 85,
-    borderRadius: Border.br_10xs,
-    right: 0,
-    position: 'absolute',
-  },
-  disabledStatus100: {
-    top: 90,
-    backgroundColor: Color.darkgray,
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'center',
-    height: 30,
-    width: 85,
-    borderRadius: Border.br_10xs,
-    right: 0,
-    position: 'absolute',
-  },
-  status200: {
-    top: 135,
-    backgroundColor: Color.honeydew,
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'center',
-    height: 30,
-    width: 85,
-    borderRadius: Border.br_10xs,
-    right: 0,
-    position: 'absolute',
-  },
-  disabledstatus200: {
-    top: 135,
+  disabledStatus: {
+    top: 35,
     backgroundColor: Color.darkgray,
     alignItems: 'center',
     textAlign: 'center',
@@ -439,7 +431,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   qrIcon: {
-    top: '20%',
+    marginTop: -20,
+    top: '50%',
     right: '3%',
   },
   pxphotoIcon: {
