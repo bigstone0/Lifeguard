@@ -15,36 +15,56 @@ function SignageList() {
   const [name, setname] = useState([]);
 
   useEffect(() => {
+    d_state();
+    i_state();
+    name_state();
+    setInterval(() => {
+      d_state();
+      i_state();
+      name_state();
+    }, 10000);
+  }, []);
+
+  const d_state = () => {
     axios
       .get("/lifeguard/doorState")
       .then((response) => setdoorState(response.data))
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
 
-  useEffect(() => {
+  const i_state = () => {
     axios
       .get("/lifeguard/innerState")
       .then((response) => setinnerState(response.data))
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
 
-  useEffect(() => {
+  const name_state = () => {
     axios
       .get("/lifeguard/name")
       .then((response) => setname(response.data))
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
 
   const [isTsunamiModalOpen, setIsTsunamiModalOpen] = useState(false);
+  const [isSafeModalOpen, setIsSafeModalOpen] = useState(false);
 
   const openTsunamiModal = () => {
     setIsTsunamiModalOpen(true);
+  };
+
+  const closeTsunamiModal = () => {
+    setIsTsunamiModalOpen(false);
+  };
+
+  const openSafeModal = () => {
+    setIsSafeModalOpen(true);
     axios
       .get("/lifeguard/alldooropen")
       .then((response) => setdoorState(response.data))
@@ -53,8 +73,17 @@ function SignageList() {
       });
   };
 
-  const closeTsunamiModal = () => {
-    setIsTsunamiModalOpen(false);
+  const allopen = () => {
+    axios
+      .get("/lifeguard/alldooropen")
+      .then((response) => setdoorState(response.data))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const closeSafeModal = () => {
+    setIsSafeModalOpen(false);
   };
 
   return (
@@ -110,7 +139,36 @@ function SignageList() {
             <br />
             All signage opening soon.
           </p>
+          <div className="ModalVertical">
+            <button className="ButtonRedShort" onClick={allopen}>
+              caution level
+            </button>
+            <button className="ButtonRedShort" onClick={allopen}>
+              alert level
+            </button>
+            <button className="ButtonRedShort" onClick={allopen}>
+              serious level
+            </button>
+          </div>
           <button className="ButtonBlueShort" onClick={closeTsunamiModal}>
+            back
+          </button>
+        </CustomModal>
+        <button className="ButtonGreen" onClick={openSafeModal}>
+          <p>Tsunami Evacuation End</p>
+        </button>
+        <CustomModal
+          isOpen={isSafeModalOpen}
+          onRequestClose={closeSafeModal}
+          classname={"EndTsunamiModal"}
+        >
+          <p className="BackgroundSubtitle">Safety</p>
+          <p>
+            Tsunami situation has ended
+            <br />
+            All signage opening soon.
+          </p>
+          <button className="ButtonBlueShort" onClick={closeSafeModal}>
             back
           </button>
         </CustomModal>

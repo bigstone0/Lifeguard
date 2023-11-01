@@ -34,48 +34,65 @@ function SignageSetting() {
   let state = location.state || {};
 
   let name = state.name || "";
-  let doorState = state.doorState || "";
-  let innerState = state.innerState || "";
   let sig_lat = state.lat;
   let sig_lng = state.lng;
 
-  const [door, setdoor] = useState(doorState);
-  useEffect(() => {
-    axios
-      .get("/lifeguard/doorclose", {
-        params: {
-          name: name,
-          doorState: door,
-        },
-      })
-      .catch(function () {
-        console.log("실패함");
-      });
-  }, [door]);
+  const [doorState, setdoorState] = useState("");
+  const [innerState, setinnerState] = useState("");
+  const [video, setvideo] = useState("");
 
   const center = useMemo(() => ({ lat: sig_lat, lng: sig_lng }), []);
-
-  let innerStateClass = getInnerStateClass(innerState);
 
   // 토글 스위치 state
   const [isChecked, setIsChecked] = useState();
 
   useEffect(() => {
-    if (door == "open") {
+    name_d_state();
+    name_i_state();
+    setInterval(() => {
+      name_d_state();
+      name_i_state();
+    }, 10000);
+  }, []);
+
+  const name_d_state = () => {
+    axios
+      .get("/lifeguard/namedoorState", {
+        params: {
+          name: name,
+        },
+      })
+      .then((response) => setdoorState(response.data))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const name_i_state = () => {
+    axios
+      .get("/lifeguard/nameinnerState", {
+        params: {
+          name: name,
+        },
+      })
+      .then((response) => setinnerState(response.data))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (doorState == "open") {
       setIsChecked(true);
     }
-    if (door == "closed") {
+    if (doorState == "closed") {
       setIsChecked(false);
     }
-  }, []);
+  }, [doorState]);
 
   // modal창 state
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isSelectModalOpen, setIsSelectModalOpen] = useState(false);
-
-  const openSaveModal = () => {
-    setIsSaveModalOpen(true);
-  };
 
   const closeSaveModal = () => {
     setIsSaveModalOpen(false);
@@ -89,53 +106,70 @@ function SignageSetting() {
     setIsSelectModalOpen(false);
   };
 
+  const playvideo = () => {
+    setvideo(selectedItem);
+    axios
+      .get("/lifeguard/video", {
+        params: {
+          name: name,
+          video: selectedItem,
+        },
+      })
+      .catch(function () {
+        console.log("실패함");
+      });
+    closeSelectModal();
+  };
+
   const handleToggleChange = (checked) => {
     setIsChecked(checked);
     if (isChecked == false) {
-      setdoor("open");
+      setdoorState("open");
+      axios
+        .get("/lifeguard/doorclose", {
+          params: {
+            name: name,
+            doorState: "open",
+          },
+        })
+        .catch(function () {
+          console.log("실패함");
+        });
     }
     if (isChecked == true) {
-      setdoor("closed");
+      setdoorState("closed");
+      axios
+        .get("/lifeguard/doorclose", {
+          params: {
+            name: name,
+            doorState: "closed",
+          },
+        })
+        .catch(function () {
+          console.log("실패함");
+        });
     }
   };
 
-  let doorStateClass = getDoorStateClass(door);
+  let doorStateClass = getDoorStateClass(doorState);
+  let innerStateClass = getInnerStateClass(innerState);
 
   // 비디오 관련 변수들
-  let currentVideoName = "safety_rulse.mp4"; //state로 만들기? 몰라 나중에
 
   const [playList, setPlayList] = useState([
     { index: 0, title: "safety_rulse.mp4", reserveTime: null },
     { index: 1, title: "advertise.mp4", reserveTime: null },
-    { index: 2, title: "work_information.mp4", reserveTime: null },
+    { index: 2, title: "caution_level.mp4", reserveTime: null },
+    { index: 3, title: "alert_level.mp4", reserveTime: null },
+    { index: 4, title: "serious_level.mp4", reserveTime: null },
   ]);
 
   // 목록에서 항목 클릭했을 때 해당 item 처리
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleItemClick = (itemId) => {
-    setSelectedItem(itemId);
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
   };
-
-  // time picker 초기값 설정
-  const [selectedTime, setSelectedTime] = useState(moment().format("HH:mm"));
-
-  const handleTimeChange = (time) => {
-    setSelectedTime(time);
-  };
-
-  // Reservation 버튼 눌렀을 때 동작
-  // 선택한 항목의 reserveTime값이 HH:mm 형식으로 저장되고 우측에 표시된다.
-  const handleReservationClick = () => {
-    if (selectedItem !== null && selectedTime !== null) {
-      const selectedItemCopied = selectedItem.slice();
-      const index = parseInt(selectedItemCopied.replace("item", ""), 10);
-      const updatedPlayList = playList.slice();
-      updatedPlayList[index].reserveTime = selectedTime;
-      setPlayList(updatedPlayList);
-    }
-  };
-
   return (
     <BackgroundLayer>
       <div className="SignageSetting">
@@ -161,12 +195,12 @@ function SignageSetting() {
               <p className="SignageName">{name}</p>
               <div className="State">
                 <p>state : </p>
-                <button className={doorStateClass}>{door}</button>
+                <button className={doorStateClass}>{doorState}</button>
                 <button className={innerStateClass}>{innerState}</button>
               </div>
               <InputComponents
                 label="CurrentVideo"
-                placeholder={currentVideoName}
+                placeholder={video}
                 isdisabled={true}
               ></InputComponents>
               <div className="SelectButtonWrapper">
@@ -181,33 +215,9 @@ function SignageSetting() {
                   <div className="ModalSelectWrapper">
                     <p className="BackgroundSubtitle">Playlist</p>
                     <ListView items={playList} onItemClick={handleItemClick} />
-                    <div className="ModalSelectButtonWrapper">
-                      <div className="ReserveTime">
-                        <TimeSelector
-                          onTimeChange={handleTimeChange}
-                        ></TimeSelector>
-                        <button
-                          className="ButtonReservation"
-                          onClick={handleReservationClick}
-                        >
-                          <p>Reservation</p>
-                        </button>
-                      </div>
-                      <div className="ModifyPlaylist">
-                        <button className="ButtonModifyPlaylist">
-                          <p>+</p>
-                        </button>
-                        <button className="ButtonModifyPlaylist">
-                          <p>-</p>
-                        </button>
-                      </div>
-                    </div>
                   </div>
-                  <button
-                    className="ButtonBlueShort"
-                    onClick={closeSelectModal}
-                  >
-                    done
+                  <button className="ButtonBlueShort" onClick={playvideo}>
+                    play
                   </button>
                 </CustomModal>
               </div>
@@ -229,10 +239,6 @@ function SignageSetting() {
               <p>back</p>
             </button>
           </Link>
-
-          <button className="ButtonBlueShort" onClick={openSaveModal}>
-            <p>save</p>
-          </button>
           <CustomModal
             isOpen={isSaveModalOpen}
             onRequestClose={closeSaveModal}

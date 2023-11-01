@@ -10,7 +10,29 @@
     justify-content: center; /* 가로 방향으로 중앙 정 */
     align-items: center; /* 세로 방향으로 중앙 정렬 */
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 3%;
 }
+
+.ButtonRedShort {
+    background-color: rgba(255, 0, 0, 0.67);
+    border: none;
+    color: white;
+    width: 25%;
+    height: 2rem;
+    font-size: 1rem;
+    display: flex;
+    /*Flexbox 사용*/
+    justify-content: center;
+    /* 가로 방향으로 중앙 정 */
+    align-items: center;
+    /* 세로 방향으로 중앙 정렬 */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
 .ButtonBlueLong {
     background-color: #3862F9;
     border: none;
@@ -47,6 +69,15 @@
     border-radius: 1rem;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
 }
+
+.ButtonGreen {
+    background-color: rgba(42, 244, 72, 0.637);
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
 .ButtonModifyPlaylist {
     display: flex;
     justify-content: center;

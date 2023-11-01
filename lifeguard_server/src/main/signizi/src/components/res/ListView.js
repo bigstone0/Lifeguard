@@ -26,8 +26,8 @@ const ListItem = ({ id, title, reserveTime, onClick, isSelected }) => {
 const ListView = ({ items, onItemClick }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleClick = (id) => {
-    const newItem = id === selectedItem ? null : id;
+  const handleClick = (title) => {
+    const newItem = title === selectedItem ? null : title;
     setSelectedItem(newItem);
     onItemClick(newItem);
   };
@@ -41,8 +41,8 @@ const ListView = ({ items, onItemClick }) => {
               id={`item${index}`}
               title={title}
               reserveTime={reserveTime}
-              onClick={() => handleClick(`item${index}`)}
-              isSelected={selectedItem === `item${index}`}
+              onClick={() => handleClick(title)}
+              isSelected={selectedItem === title}
             />
           </li>
         ))}
