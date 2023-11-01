@@ -28,4 +28,15 @@ public interface LifeguardRepository extends JpaRepository<Lifeguard,String> {
     @Transactional
     @Query(value="UPDATE lifeguard l SET l.door_status = :door_status WHERE l.lifeguard_name = :name",nativeQuery = true)
     void doorclose(@Param("name") String name, @Param("door_status") String door_status);
+
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE lifeguard l SET l.video=:video WHERE l.lifeguard_name=:name",nativeQuery = true)
+    void currentvideo(@Param("video") String video,@Param("name") String name);
+
+    @Query(value="SELECT door_status FROM lifeguard WHERE lifeguard_name=:name",nativeQuery = true)
+    String namedoorState(@Param("name")String name);
+
+    @Query(value="SELECT inner_status FROM lifeguard WHERE lifeguard_name=:name",nativeQuery = true)
+    String nameinnerState(@Param("name")String name);
 }

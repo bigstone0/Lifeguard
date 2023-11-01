@@ -10,6 +10,7 @@ import {
 import {FontFamily, FontSize, Color, Border} from '../GlobalStyles';
 import {Dimensions} from 'react-native';
 import axios from 'axios';
+import { useEffect } from "react";
 
 type ButtonProps = {
   stat: string;
@@ -25,32 +26,43 @@ const List = ({navigation}: {navigation: any}) => {
   const [inner_state, setinner_state] = React.useState([]);
   const [name, setName] = React.useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    d_state();
+    i_state();
+    n_state();
+    setInterval(() => {
+      d_state();
+      i_state();
+      n_state();
+    }, 10000);
+  }, []);
+
+  const d_state = () => {
     axios
       .get('http://10.0.2.2:8080/lifeguard/doorState')
       .then(response => setdoor_state(response.data))
       .catch(error => {
         console.log(error);
       });
-  }, []);
+  };
 
-  React.useEffect(() => {
+  const i_state = () => {
     axios
       .get('http://10.0.2.2:8080/lifeguard/innerState')
       .then(response => setinner_state(response.data))
       .catch(error => {
         console.log(error);
       });
-  }, []);
+  };
 
-  React.useEffect(() => {
+  const n_state = () => {
     axios
       .get('http://10.0.2.2:8080/lifeguard/name')
       .then(response => setName(response.data))
       .catch(error => {
         console.log(error);
       });
-  }, []);
+  };
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Buttons = (props: ButtonProps) => {
@@ -74,8 +86,6 @@ const List = ({navigation}: {navigation: any}) => {
                 lat: signizi_lat[0],
                 lng: signizi_lng[0],
                 name: name[0],
-                doorstate: door_state[0],
-                innerstate: inner_state[0],
               })
             }>
             <Text style={[styles.nameText]}>{name[0]}</Text>
@@ -95,8 +105,6 @@ const List = ({navigation}: {navigation: any}) => {
                 lat: signizi_lat[1],
                 lng: signizi_lng[1],
                 name: name[1],
-                doorstate: door_state[1],
-                innerstate: inner_state[1],
               })
             }>
             <Text style={[styles.nameText]}>{name[1]}</Text>
@@ -116,8 +124,6 @@ const List = ({navigation}: {navigation: any}) => {
                 lat: signizi_lat[2],
                 lng: signizi_lng[2],
                 name: name[2],
-                doorstate: door_state[2],
-                innerstate: inner_state[2],
               })
             }>
             <Text style={[styles.nameText]}>{name[2]}</Text>
@@ -137,8 +143,6 @@ const List = ({navigation}: {navigation: any}) => {
                 lat: signizi_lat[3],
                 lng: signizi_lng[3],
                 name: name[3],
-                doorstate: door_state[3],
-                innerstate: inner_state[3],
               })
             }>
             <Text style={[styles.nameText]}>{name[3]}</Text>

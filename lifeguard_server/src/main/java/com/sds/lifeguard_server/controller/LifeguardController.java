@@ -16,6 +16,18 @@ public class LifeguardController{
 
     @Autowired
     LifeguardRepository lifeguardRepository;
+
+    @GetMapping("/lifeguard/namedoorState")
+    public String namedoorState(@RequestParam String name){
+        String doorState= lifeguardRepository.namedoorState(name);
+        return doorState;
+    }
+
+    @GetMapping("/lifeguard/nameinnerState")
+    public String nameinnerState(@RequestParam String name){
+        String innerState= lifeguardRepository.nameinnerState(name);
+        return innerState;
+    }
     @GetMapping("/lifeguard/doorState")
     public List<String> doorState(){
         List<String> doors=lifeguardRepository.selectdoorstatus();
@@ -37,19 +49,25 @@ public class LifeguardController{
     @GetMapping("/lifeguard/doorclose")
     public void Close(@RequestParam String name,@RequestParam String doorState) throws Exception {
         lifeguardRepository.doorclose(name,doorState);
-        if(doorState.equals("open")){
-            sendOpenService.open();
-        }
-        else if(doorState.equals("closed")){
-            sendCloseService.close();
-        }
+//        if(doorState.equals("open")){
+//            sendOpenService.open();
+//        }
+//        else if(doorState.equals("closed")){
+//            sendCloseService.close();
+//        }
         System.out.println("name="+name+"state"+doorState);
+    }
+
+    @GetMapping("/lifeguard/video")
+    public void Video(@RequestParam String name,@RequestParam String video) throws Exception{
+        sendVideoService.video(video);
+        lifeguardRepository.currentvideo(video,name);
     }
 
     @GetMapping("/lifeguard/alldooropen")
     public List<String> allOpen() throws Exception{
         lifeguardRepository.allopen("open");
-        sendAllOpenService.allopen();
+//        sendAllOpenService.allopen();
         List<String> d_status=lifeguardRepository.selectdoorstatus();
         return d_status;
     }

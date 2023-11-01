@@ -28,6 +28,9 @@ public class Lifeguard {
     @Column(name="inner_status")
     private String inner_status;
 
+    @Column(name="video")
+    private String video;
+
     @Column(name="created_at")
     private LocalDateTime created_at;
 

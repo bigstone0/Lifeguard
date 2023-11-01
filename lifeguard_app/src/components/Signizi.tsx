@@ -17,6 +17,7 @@ import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 import {CameraOptions, launchCamera} from 'react-native-image-picker';
+import {useEffect} from 'react';
 
 // const Tab = createMaterialBottomTabNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -56,8 +57,9 @@ async function requestPermissions() {
 
 const Signizi = ({route, navigation}: any) => {
   requestPermissions();
-  const {lat, lng, name, doorstate, innerstate} = route.params;
-  const [door, setdoor] = React.useState(doorstate);
+  const {lat, lng, name} = route.params;
+  const [door, setdoor] = React.useState('');
+  const [inner, setinner] = React.useState('');
   const [btState, setbtState] = React.useState(true);
   const [btStyle, setbtStyle] = React.useState(styles.disabledStatus);
 
@@ -73,6 +75,40 @@ const Signizi = ({route, navigation}: any) => {
   //   }
   //   console.log('PickImage', res);
   // };
+  React.useEffect(() => {
+    d_state();
+    i_state();
+    setInterval(() => {
+      d_state();
+      i_state();
+    }, 10000);
+  }, []);
+
+  const d_state = () => {
+    axios
+      .get('http://10.0.2.2:8080/lifeguard/namedoorState', {
+        params: {
+          name: name,
+        },
+      })
+      .then(response => setdoor(response.data))
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const i_state = () => {
+    axios
+      .get('http://10.0.2.2:8080/lifeguard/nameinnerState', {
+        params: {
+          name: name,
+        },
+      })
+      .then(response => setinner(response.data))
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const options: CameraOptions = {
     mediaType: 'photo',
@@ -156,7 +192,7 @@ const Signizi = ({route, navigation}: any) => {
     // </Text>
     <View style={[styles.signizi, styles.barBg]}>
       <View style={styles.buttons}>
-        <Button title="뒤로가기" onPress={() => navigation.pop()} />
+        <Button title="뒤로가기" onPress={() => navigation.navigate('List')} />
       </View>
       {location && (
         <MapView
@@ -191,7 +227,7 @@ const Signizi = ({route, navigation}: any) => {
             <Text style={[styles.text, styles.textTypo]}>{name}</Text>
             <Text style={[styles.text1, styles.textTypo]}>
               {'현재 상태 : '}
-              {innerstate}
+              {inner}
             </Text>
             <View style={[styles.line, styles.lineLayout]} />
             <View style={[styles.line1, styles.lineLayout]} />

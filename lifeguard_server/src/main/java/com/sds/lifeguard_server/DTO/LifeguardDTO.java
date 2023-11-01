@@ -15,6 +15,7 @@ public class LifeguardDTO {
     private @Getter @Setter String lifeguard_address;
     private @Getter @Setter String door_status;
     private @Getter @Setter String inner_status;
+    private @Getter @Setter String video;
     private @Getter @Setter LocalDateTime created_at;
     private @Getter @Setter LocalDateTime updated_at;
 }
