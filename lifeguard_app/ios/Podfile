@@ -25,7 +25,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'lifeguard' do
+target 'lifeguard_app' do
   config = use_native_modules!
 
   # Flags change depending on the env values.
@@ -45,7 +45,7 @@ target 'lifeguard' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'lifeguardTests' do
+  target 'lifeguard_appTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -8,9 +8,9 @@ import List from './src/components/List';
 import Signizi from './src/components/Signizi';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {View, Text, Pressable, TouchableOpacity} from 'react-native';
 
 const App = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
 
   return (

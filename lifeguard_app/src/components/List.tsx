@@ -2,11 +2,9 @@ import * as React from 'react';
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ScrollView,
   SafeAreaView,
-  StatusBar,
   TouchableOpacity,
 } from 'react-native';
 import {FontFamily, FontSize, Color, Border} from '../GlobalStyles';

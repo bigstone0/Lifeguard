@@ -1,5 +1,6 @@
 import socket
 import argparse
+import time
 
 # 명령줄 인자 처리
 parser = argparse.ArgumentParser(description='Send a message to the server.')
@@ -7,7 +8,7 @@ parser.add_argument('message', type=str, help='The message to send')
 args = parser.parse_args()
 
 # 호스트와 포트 번호 설정 (수신 쪽과 동일해야 함)
-host = 'localhost'  # 루프백 인터페이스 주소(자기 자신)
+host = 'raspberrypi.local'  # 루프백 인터페이스 주소(자기 자신)
 port = 12345       # 사용할 포트 번호
 
 # 서버에 연결하기 위한 소켓 생성 및 연결 요청 보내기
@@ -31,20 +32,21 @@ try:
     print('받은 메시지:', received_data)
 
     # ACK 수신 성공
-    
+
 except socket.timeout:
     print('ACK 대기 시간이 초과되었습니다. 재전송합니다.')
 
     # 메시지 재전송
     client_socket.sendall(message.encode())
-    
+
     try:
+        time.sleep(0.5)
         received_data = client_socket.recv(1024).decode()
         print('받은 메시지:', received_data)
 
         # ACK 수신 성공
-        
-            
+
+
     except socket.timeout:
         print('ACK 대기 시간이 다시 초과되었습니다. 전송 실패')
 

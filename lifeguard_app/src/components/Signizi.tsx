@@ -7,20 +7,16 @@ import {
   TouchableOpacity,
   Button,
   Modal,
-  Pressable,
   Alert,
 } from 'react-native';
 import Styled from 'styled-components/native';
 import MapView, {Marker} from 'react-native-maps';
 import {Color, Border, FontFamily, FontSize} from '../GlobalStyles';
 import {Dimensions} from 'react-native';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import Login from './Login';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
-import {Camera} from 'expo-camera';
+import {CameraOptions, launchCamera} from 'react-native-image-picker';
 
 // const Tab = createMaterialBottomTabNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -71,47 +67,62 @@ const Signizi = ({route, navigation}: any) => {
 
   const [modalVisible, setModalVisible] = React.useState(true);
 
-  // const openCameraHandler = async () => {
-  //   const {status} = await Camera.requestCameraPermissionsAsync();
-
-  //   if (status == 'granted') {
+  // const onPickImage = (res: any) => {
+  //   if (res.didCancel || !res) {
+  //     return;
   //   }
+  //   console.log('PickImage', res);
   // };
+
+  const options: CameraOptions = {
+    mediaType: 'photo',
+    cameraType: 'back',
+    quality: 1,
+  };
 
   React.useEffect(() => {
     console.log(lat, lng);
   });
 
+  const onLaunchCamera = () => {
+    launchCamera(options);
+  };
+
   const btnDisabled = () => {
     setbtState(false);
     setbtStyle(styles.status);
+    onLaunchCamera();
   };
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Switch = () => {
     if (door === 'open') {
       setdoor('closed');
+      Alert.alert('door closed');
+      doorSwitch('closed');
       return <Text style={styles.close}>{door}</Text>;
     }
     if (door === 'closed') {
       setdoor('open');
+      Alert.alert('door open');
+      doorSwitch('open');
       return <Text style={styles.open}>{door}</Text>;
     }
   };
 
-  React.useEffect(() => {
+  const doorSwitch = (door_s: any) => {
     axios
       .get('http://10.0.2.2:8080/lifeguard/doorclose', {
         params: {
           name: name,
-          doorState: door,
+          doorState: door_s,
         },
       })
       .catch(function () {
         console.log('실패함');
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [door]);
+  };
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Buttons = (props: ButtonProps) => {
@@ -144,6 +155,9 @@ const Signizi = ({route, navigation}: any) => {
     //   ${location?.latitude},${location?.longitude}
     // </Text>
     <View style={[styles.signizi, styles.barBg]}>
+      <View style={styles.buttons}>
+        <Button title="뒤로가기" onPress={() => navigation.pop()} />
+      </View>
       {location && (
         <MapView
           style={styles.signizi}
@@ -484,6 +498,9 @@ const styles = StyleSheet.create({
     height: windowHeight,
     width: windowWidth,
     alignItems: 'center',
+  },
+  buttons: {
+    flexDirection: 'row',
   },
 });
 

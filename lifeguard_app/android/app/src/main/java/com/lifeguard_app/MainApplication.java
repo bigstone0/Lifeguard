@@ -1,4 +1,4 @@
-package com.lifeguard;
+package com.lifeguard_app;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
