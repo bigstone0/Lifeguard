@@ -7,36 +7,47 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import {Border, Color, FontSize, FontFamily} from '../GlobalStyles';
 import {Dimensions} from 'react-native';
+import {signIn} from '../../auth';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Login = ({navigation}: {navigation: any}) => {
-  const [id, onChangeId] = React.useState('');
-  const [password, onChangePassword] = React.useState('');
+  const [id, onChangeId] = React.useState('0');
+  const [password, onChangePassword] = React.useState('0');
+
+  const signInSubmit = async () => {
+    try {
+      const {user} = await signIn(id, password);
+      console.log(user);
+      navigation.navigate('List');
+    } catch (error) {
+      Alert.alert('로그인에 실패했습니다.');
+    }
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAwareScrollView>
       <View style={styles.login}>
         <Text style={styles.login1}>Login</Text>
         <TextInput
           style={[styles.idBox, styles.loginShadowBox]}
           onChangeText={onChangeId}
-          value={id}
           placeholder="이메일 입력"
         />
         <TextInput
           style={[styles.passwordBox, styles.loginShadowBox]}
           onChangeText={onChangePassword}
-          value={password}
           placeholder="비밀번호 입력"
         />
         <TouchableOpacity
           style={[styles.loginInner, styles.loginLayout]}
-          onPress={() => navigation.navigate('List')}>
+          onPress={signInSubmit}>
           <Text style={styles.signTypo}>sign in</Text>
         </TouchableOpacity>
         <Text style={[styles.id, styles.idTypo]}>ID</Text>
@@ -47,7 +58,7 @@ const Login = ({navigation}: {navigation: any}) => {
           <Text style={styles.signTypo}>sign up</Text>
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -97,11 +108,11 @@ const styles = StyleSheet.create({
     width: 290,
   },
   passwordPosition: {
-    top: windowHeight - 280,
+    top: '56%',
     position: 'absolute',
   },
   login1: {
-    top: windowHeight - 600,
+    top: '20%',
     fontSize: FontSize.size_29xl,
     display: 'flex',
     width: windowWidth,
@@ -115,27 +126,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   idBox: {
-    top: windowHeight - 320,
+    top: '50%',
   },
   passwordBox: {
-    top: windowHeight - 250,
+    top: '58%',
   },
   loginInner: {
-    top: windowHeight - 170,
-  },
-  signIn: {
-    top: windowHeight - 167,
+    top: '70%',
   },
   id: {
-    top: windowHeight - 350,
+    top: '48%',
     position: 'absolute',
-  },
-  loginChild1: {
-    height: 24,
-    width: 156,
-    borderRadius: Border.br_31xl,
-    left: 38,
-    backgroundColor: Color.white,
   },
   password: {
     fontSize: FontSize.size_mini,
@@ -147,18 +148,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     width: 290,
   },
-  arrowIcon: {
-    top: 812,
-    left: 176,
-    width: 22,
-    height: 0,
-    position: 'absolute',
-  },
   signupBox: {
-    top: windowHeight - 100,
-  },
-  signUp: {
-    top: windowHeight - 97,
+    top: '75%',
   },
   login: {
     width: windowWidth,

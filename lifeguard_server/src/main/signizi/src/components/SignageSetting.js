@@ -1,7 +1,7 @@
 import "./SignageSetting.css";
 import "./res/ButtonStyle.css";
 import "./res/SignageComponents.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { useMemo } from "react";
 import { GoogleMap, LoadScriptNext, MarkerF } from "@react-google-maps/api";
@@ -46,13 +46,18 @@ function SignageSetting() {
   // 토글 스위치 state
   const [isChecked, setIsChecked] = useState();
 
+  const interval = useRef();
+
   useEffect(() => {
     name_d_state();
     name_i_state();
-    setInterval(() => {
+    interval.current = setInterval(() => {
       name_d_state();
       name_i_state();
-    }, 10000);
+    }, 5000);
+    return () => {
+      clearInterval(interval.current);
+    };
   }, []);
 
   const name_d_state = () => {
@@ -126,7 +131,7 @@ function SignageSetting() {
     if (isChecked == false) {
       setdoorState("open");
       axios
-        .get("/lifeguard/doorclose", {
+        .get("/lifeguard/serverdoorclose", {
           params: {
             name: name,
             doorState: "open",
@@ -139,7 +144,7 @@ function SignageSetting() {
     if (isChecked == true) {
       setdoorState("closed");
       axios
-        .get("/lifeguard/doorclose", {
+        .get("/lifeguard/serverdoorclose", {
           params: {
             name: name,
             doorState: "closed",

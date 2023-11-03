@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @GetMapping("/sign/userSignUp")
-    public String usersignup(@RequestParam String id, @RequestParam String pw, @RequestParam String name, @RequestParam String phone, @RequestParam String email) {
+    public void usersignup(@RequestParam String id, @RequestParam String pw, @RequestParam String name, @RequestParam String phone, @RequestParam String email) {
         UserDTO user=new UserDTO();
         user.setUser_id(id);
         user.setUser_pw(pw);
@@ -64,7 +64,5 @@ public class MemberController {
                 .build();
 
         userMapper.insertUser(userEntity);
-
-        return "complete!!";
     }
 }

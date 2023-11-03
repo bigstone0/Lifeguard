@@ -18,6 +18,8 @@ public class sendVideoService {
             builder=new ProcessBuilder("python3","send_video.py","middle");
         } else if (message.equals("serious_level.mp4")) {
             builder=new ProcessBuilder("python3","send_video.py","high");
+        } else if (message.equals("open.mp4")) {
+        builder=new ProcessBuilder("python3","send_video.py","open");
         } else {
             System.out.println("fail");
             return;

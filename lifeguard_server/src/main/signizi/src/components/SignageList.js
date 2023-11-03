@@ -3,7 +3,7 @@ import "./res/ButtonStyle.css";
 import BackgroundLayer from "./res/BackgroundLayer";
 import SignageComponents from "./res/SignageComponents";
 // import SignageSetting from './SignageSetting';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CustomModal from "./res/CustomModal";
 import axios from "axios";
 
@@ -14,15 +14,20 @@ function SignageList() {
   const [innerState, setinnerState] = useState([]);
   const [name, setname] = useState([]);
 
+  const interval = useRef();
+
   useEffect(() => {
     d_state();
     i_state();
     name_state();
-    setInterval(() => {
+    interval.current = setInterval(() => {
       d_state();
       i_state();
       name_state();
-    }, 10000);
+    }, 5000);
+    return () => {
+      clearInterval(interval.current);
+    };
   }, []);
 
   const d_state = () => {
@@ -65,17 +70,42 @@ function SignageList() {
 
   const openSafeModal = () => {
     setIsSafeModalOpen(true);
+    allopen("open.mp4");
+  };
+
+  const allopen = (video) => {
     axios
-      .get("/lifeguard/alldooropen")
+      .get("/lifeguard/alldooropen", {
+        params: {
+          video: video,
+        },
+      })
       .then((response) => setdoorState(response.data))
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const allopen = () => {
+  const allopen1 = (video) => {
     axios
-      .get("/lifeguard/alldooropen")
+      .get("/lifeguard/alldooropen1", {
+        params: {
+          video: video,
+        },
+      })
+      .then((response) => setdoorState(response.data))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const allclosed = (video) => {
+    axios
+      .get("/lifeguard/alldoorclosed", {
+        params: {
+          video: video,
+        },
+      })
       .then((response) => setdoorState(response.data))
       .catch((error) => {
         console.log(error);
@@ -140,13 +170,22 @@ function SignageList() {
             All signage opening soon.
           </p>
           <div className="ModalVertical">
-            <button className="ButtonRedShort" onClick={allopen}>
+            <button
+              className="ButtonRedShort"
+              onClick={() => allopen1("caution_level.mp4")}
+            >
               caution level
             </button>
-            <button className="ButtonRedShort" onClick={allopen}>
+            <button
+              className="ButtonRedShort"
+              onClick={() => allopen1("alert_level.mp4")}
+            >
               alert level
             </button>
-            <button className="ButtonRedShort" onClick={allopen}>
+            <button
+              className="ButtonRedShort"
+              onClick={() => allclosed("serious_level.mp4")}
+            >
               serious level
             </button>
           </div>

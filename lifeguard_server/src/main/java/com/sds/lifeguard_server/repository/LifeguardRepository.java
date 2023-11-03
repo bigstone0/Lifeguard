@@ -31,6 +31,11 @@ public interface LifeguardRepository extends JpaRepository<Lifeguard,String> {
 
     @Modifying
     @Transactional
+    @Query(value="UPDATE lifeguard l SET l.inner_status = :inner_status WHERE l.lifeguard_name = :name",nativeQuery = true)
+    void innerchange(@Param("name") String name, @Param("inner_status") String inner_status);
+
+    @Modifying
+    @Transactional
     @Query(value="UPDATE lifeguard l SET l.video=:video WHERE l.lifeguard_name=:name",nativeQuery = true)
     void currentvideo(@Param("video") String video,@Param("name") String name);
 

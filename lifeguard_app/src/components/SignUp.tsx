@@ -13,29 +13,29 @@ import {FontSize, FontFamily, Border, Color} from '../GlobalStyles';
 import {Dimensions} from 'react-native';
 import Login from './Login';
 import axios from 'axios';
-// import {createUserWithEmailAndPassword} from 'firebase/auth';
-// import {signUp} from '../../lib/auth';
+import {signUp} from '../../auth';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const SignUp = ({navigation}: {navigation: any}) => {
-  const [input_password, onChangePassword] = React.useState('');
-  const [input_email, onChangeEmail] = React.useState('');
+  const [input_password, onChangePassword] = React.useState('0');
+  const [input_email, onChangeEmail] = React.useState('0');
   const [input_username, onChangeUsername] = React.useState('');
   const [input_phone, onChangePhone] = React.useState('');
 
-  // const signUpSubmit = async () => {
-  //   // 회원가입 함수
-  //   const {email, password} = form;
-  //   const info = {email, password};
-  //   try {
-  //     const {user} = await signUp(info);
-  //     console.log(user);
-  //   } catch (e) {
-  //     Alert.alert('회원가입에 실패하였습니다.');
-  //   }
-  // };
+  const signUpSubmit = async () => {
+    // 회원가입 함수
+    try {
+      const {user} = await signUp(input_email, input_password);
+      console.log(user);
+      userdata();
+      Alert.alert('회원가입에 성공하였습니다.');
+    } catch (error) {
+      Alert.alert('회원가입에 실패하였습니다.');
+    }
+  };
 
   const userdata = () => {
     axios
@@ -48,49 +48,46 @@ const SignUp = ({navigation}: {navigation: any}) => {
           email: input_email,
         },
       })
-      .then(response => Alert.alert(response.data))
       .catch(error => {
         console.log(error);
       });
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAwareScrollView>
       <View style={styles.signUp}>
         <Text style={styles.signUp_text}>SIGN UP</Text>
         <View style={[styles.email_Rectangle, styles.signChildLayout1]} />
         <TextInput
           style={[styles.email_Rectangle, styles.signChildLayout1]}
           onChangeText={onChangeEmail}
-          value={input_email}
+          placeholder="xxxx@example.com"
         />
         <Text style={[styles.emailPosition, styles.email]}>E-mail</Text>
         <View style={[styles.password_Rectangle, styles.signChildLayout1]} />
         <TextInput
           style={[styles.password_Rectangle, styles.signChildLayout1]}
           onChangeText={onChangePassword}
-          value={input_password}
+          placeholder="6자리 이상"
         />
         <Text style={[styles.password, styles.passwordPosition]}>Password</Text>
         <View style={[styles.username_Rectangle, styles.signChildLayout1]} />
         <TextInput
           style={[styles.username_Rectangle, styles.signChildLayout1]}
           onChangeText={onChangeUsername}
-          value={input_username}
         />
         <Text style={[styles.username, styles.usernamePosition]}>Username</Text>
         <View style={[styles.phone_Rectangle, styles.signChildLayout1]} />
         <TextInput
           style={[styles.phone_Rectangle, styles.signChildLayout1]}
           onChangeText={onChangePhone}
-          value={input_phone}
         />
         <Text style={[styles.phoneNumber, styles.phoneNumberPosition]}>
           Phone number
         </Text>
         <TouchableOpacity
           style={[styles.registerInner, styles.signChildLayout1]}
-          onPress={() => userdata()}>
+          onPress={signUpSubmit}>
           <Text style={[styles.signUp_text2, styles.signUp2Typo]}>sign up</Text>
         </TouchableOpacity>
 
@@ -100,7 +97,7 @@ const SignUp = ({navigation}: {navigation: any}) => {
           <Text style={styles.signUp2Typo}>sign in</Text>
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -8,6 +8,7 @@ import {
   Button,
   Modal,
   Alert,
+  Pressable,
 } from 'react-native';
 import Styled from 'styled-components/native';
 import MapView, {Marker} from 'react-native-maps';
@@ -17,7 +18,6 @@ import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
 import {CameraOptions, launchCamera} from 'react-native-image-picker';
-import {useEffect} from 'react';
 
 // const Tab = createMaterialBottomTabNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -62,6 +62,8 @@ const Signizi = ({route, navigation}: any) => {
   const [inner, setinner] = React.useState('');
   const [btState, setbtState] = React.useState(true);
   const [btStyle, setbtStyle] = React.useState(styles.disabledStatus);
+  const [flag, setflag] = React.useState(false);
+  const [qrflag, qrsetflag] = React.useState(false);
 
   const [location, setLocation] = React.useState<ILocation | undefined>(
     undefined,
@@ -81,12 +83,30 @@ const Signizi = ({route, navigation}: any) => {
     setInterval(() => {
       d_state();
       i_state();
-    }, 10000);
+    }, 5000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    flag_state();
+    setInterval(() => {
+      flag_state();
+    }, 10000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const flag_state = () => {
+    axios
+      .get('http://192.168.193.20:8080/lifeguard/checkWarning')
+      .then(response => setflag(response.data))
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const d_state = () => {
     axios
-      .get('http://10.0.2.2:8080/lifeguard/namedoorState', {
+      .get('http://192.168.193.20:8080/lifeguard/namedoorState', {
         params: {
           name: name,
         },
@@ -99,7 +119,7 @@ const Signizi = ({route, navigation}: any) => {
 
   const i_state = () => {
     axios
-      .get('http://10.0.2.2:8080/lifeguard/nameinnerState', {
+      .get('http://192.168.193.20:8080/lifeguard/nameinnerState', {
         params: {
           name: name,
         },
@@ -116,10 +136,6 @@ const Signizi = ({route, navigation}: any) => {
     quality: 1,
   };
 
-  React.useEffect(() => {
-    console.log(lat, lng);
-  });
-
   const onLaunchCamera = () => {
     launchCamera(options);
   };
@@ -127,31 +143,34 @@ const Signizi = ({route, navigation}: any) => {
   const btnDisabled = () => {
     setbtState(false);
     setbtStyle(styles.status);
-    onLaunchCamera();
+    setModalVisible(false);
+    qrsetflag(true);
   };
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Switch = () => {
     if (door === 'open') {
       setdoor('closed');
+      setinner('occupied');
       Alert.alert('door closed');
-      doorSwitch('closed');
+      doorSwitch('closed', 'occupied');
       return <Text style={styles.close}>{door}</Text>;
     }
     if (door === 'closed') {
       setdoor('open');
       Alert.alert('door open');
-      doorSwitch('open');
+      doorSwitch('open', inner);
       return <Text style={styles.open}>{door}</Text>;
     }
   };
 
-  const doorSwitch = (door_s: any) => {
+  const doorSwitch = (door_s: any, inner_s: any) => {
     axios
-      .get('http://10.0.2.2:8080/lifeguard/doorclose', {
+      .get('http://192.168.193.20:8080/lifeguard/doorclose', {
         params: {
           name: name,
           doorState: door_s,
+          innerState: inner_s,
         },
       })
       .catch(function () {
@@ -180,7 +199,7 @@ const Signizi = ({route, navigation}: any) => {
         });
       },
       error => {
-        console.log(error.code, error.message);
+        console.log('error.code, error.message');
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
@@ -191,9 +210,6 @@ const Signizi = ({route, navigation}: any) => {
     //   ${location?.latitude},${location?.longitude}
     // </Text>
     <View style={[styles.signizi, styles.barBg]}>
-      <View style={styles.buttons}>
-        <Button title="뒤로가기" onPress={() => navigation.navigate('List')} />
-      </View>
       {location && (
         <MapView
           style={styles.signizi}
@@ -206,6 +222,11 @@ const Signizi = ({route, navigation}: any) => {
           <Marker coordinate={{latitude: lat, longitude: lng}} />
         </MapView>
       )}
+      <View style={styles.buttons}>
+        <TouchableOpacity onPress={() => navigation.navigate('List')}>
+          <Text style={[styles.backtext]}>back</Text>
+        </TouchableOpacity>
+      </View>
       <Modal
         animationType={'slide'}
         transparent={true}
@@ -213,6 +234,10 @@ const Signizi = ({route, navigation}: any) => {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
+        <Pressable
+          style={{flex: 1, backgroundColor: 'transparent'}}
+          onPress={() => setModalVisible(!modalVisible)}
+        />
         <View style={[styles.bar, styles.barPosition]}>
           <TouchableOpacity
             style={[styles.pill, styles.closePillPosition]}
@@ -252,6 +277,43 @@ const Signizi = ({route, navigation}: any) => {
           </View>
         </View>
       </Modal>
+      <Modal
+        transparent={true}
+        visible={flag}
+        onRequestClose={() => {
+          setflag(!flag);
+        }}>
+        <Pressable
+          style={{flex: 1, backgroundColor: 'transparent'}}
+          onPress={() => setflag(!flag)}
+        />
+        <View style={[styles.warningbar, styles.warningbarPosition]}>
+          <View style={styles.warningourier}>
+            <Text style={[styles.text1, styles.warningtextTypo]}>
+              {'Warning!!'}
+              {inner}
+            </Text>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        transparent={true}
+        visible={qrflag}
+        onRequestClose={() => {
+          setflag(!qrflag);
+        }}>
+        <Pressable
+          style={{flex: 1, backgroundColor: 'transparent'}}
+          onPress={() => qrsetflag(!qrflag)}
+        />
+        <View style={[styles.camerabar, styles.warningbarPosition]}>
+          <View style={styles.warningourier}>
+            <Text style={[styles.text1, styles.warningtextTypo]}>
+              {'카메라를 키고 QR코드를 찍으세요'}
+            </Text>
+          </View>
+        </View>
+      </Modal>
       <TouchableOpacity
         style={[styles.blackPill, styles.openPillPosition]}
         onPress={() => setModalVisible(!modalVisible)}></TouchableOpacity>
@@ -260,50 +322,14 @@ const Signizi = ({route, navigation}: any) => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    top: windowHeight - 700,
-    position: 'absolute',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
   barBg: {
     backgroundColor: Color.white,
   },
   barPosition: {
-    top: windowHeight - 340,
+    bottom: '0%',
+  },
+  warningbarPosition: {
+    bottom: '60%',
   },
   closePillPosition: {
     top: 5,
@@ -313,29 +339,12 @@ const styles = StyleSheet.create({
     top: windowHeight - 50,
     position: 'absolute',
   },
-  statusFlexBox: {
-    backgroundColor: Color.darkgray,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 24,
-    borderRadius: Border.br_10xs,
-    left: 255,
-    position: 'absolute',
-  },
   qrTypo: {
     color: Color.black,
     textAlign: 'left',
     fontFamily: FontFamily.montserratSemiBold,
     fontWeight: '600',
     position: 'absolute',
-  },
-  open1Layout: {
-    left: 280,
-    height: 20,
-    width: 50,
-    lineHeight: 16,
-    letterSpacing: 0,
-    fontSize: FontSize.size_mini,
   },
   textTypo: {
     lineHeight: 24,
@@ -346,6 +355,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     position: 'absolute',
   },
+  warningtextTypo: {
+    lineHeight: 24,
+    color: Color.red,
+    textAlign: 'left',
+    fontFamily: FontFamily.montserratSemiBold,
+    fontWeight: '600',
+    letterSpacing: 0,
+    position: 'absolute',
+  },
+  backtext: {
+    lineHeight: 24,
+    color: Color.black,
+    fontFamily: FontFamily.montserratSemiBold,
+    fontWeight: '600',
+    letterSpacing: 0,
+  },
   lineLayout: {
     height: 1,
     width: 343,
@@ -353,28 +378,10 @@ const styles = StyleSheet.create({
     left: 16,
     position: 'absolute',
   },
-  profileIconLayout: {
-    width: 40,
-    height: 40,
-    position: 'absolute',
-  },
   qrIconLayout: {
     width: 40,
     height: 40,
     position: 'absolute',
-  },
-  googleMap: {
-    height: windowHeight,
-    position: 'absolute',
-    width: windowWidth,
-  },
-  homeIndicator: {
-    marginLeft: -66.5,
-    bottom: 8,
-    borderRadius: Border.br_81xl,
-    backgroundColor: Color.darkslategray,
-    width: 134,
-    height: 5,
   },
   status: {
     top: 35,
@@ -408,15 +415,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     position: 'absolute',
   },
-  open1: {
-    top: 106,
-    left: 280,
-    height: 20,
-    width: 50,
-    lineHeight: 16,
-    letterSpacing: 0,
-    fontSize: FontSize.size_mini,
-  },
   close: {
     color: Color.red,
     fontWeight: '900',
@@ -433,13 +431,6 @@ const styles = StyleSheet.create({
     top: 92,
     fontSize: FontSize.size_lgi,
   },
-  qr: {
-    top: '-20%',
-    right: 0,
-    fontSize: 10,
-    letterSpacing: 0,
-    color: Color.black,
-  },
   bar: {
     alignContent: 'center',
     alignItems: 'center',
@@ -451,6 +442,32 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: windowWidth,
   },
+  warningbar: {
+    alignContent: 'center',
+    alignItems: 'center',
+    borderRadius: Border.br_31xl,
+    overflow: 'hidden',
+    backgroundColor: Color.white,
+    height: 240,
+    position: 'absolute',
+    width: windowWidth,
+    borderWidth: 3,
+    borderColor: Color.red,
+    color: Color.red,
+  },
+  camerabar: {
+    alignContent: 'center',
+    alignItems: 'center',
+    borderRadius: Border.br_31xl,
+    overflow: 'hidden',
+    backgroundColor: Color.white,
+    height: 240,
+    position: 'absolute',
+    width: windowWidth,
+    borderWidth: 3,
+    borderColor: Color.black,
+    color: Color.black,
+  },
   line: {
     top: 72,
   },
@@ -458,27 +475,20 @@ const styles = StyleSheet.create({
     top: 175,
   },
   pill: {
-    marginTop: 0,
+    marginTop: 10,
     marginLeft: -35.5,
     borderRadius: 4,
     backgroundColor: 'rgba(184, 184, 184, 0.4)',
-    width: 72,
-    height: 10,
+    width: 150,
+    height: 20,
   },
   blackPill: {
     marginTop: 0,
     marginLeft: -35.5,
     borderRadius: 4,
     backgroundColor: Color.black,
-    width: 72,
-    height: 10,
-  },
-  navigationBar: {
-    right: 0,
-    bottom: 268,
-    height: 16,
-    left: 0,
-    position: 'absolute',
+    width: 150,
+    height: 20,
   },
   qrIcon: {
     marginTop: -20,
@@ -502,32 +512,19 @@ const styles = StyleSheet.create({
     width: windowWidth - 60,
     position: 'absolute',
   },
+  warningourier: {
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 170,
+    width: windowWidth - 60,
+    position: 'absolute',
+  },
   ourier: {
     top: 185,
     height: 40,
     width: windowWidth - 60,
     position: 'absolute',
-  },
-  signiziViews: {
-    top: windowHeight - 310,
-  },
-  navigationBarIcon: {
-    top: 47,
-    height: 56,
-    left: 0,
-    position: 'absolute',
-    width: 375,
-  },
-  signiziChild: {
-    top: 341,
-    left: 375,
-    width: 212,
-    height: 22,
-    position: 'absolute',
-  },
-  backButton: {
-    top: 100,
-    width: 30,
   },
   signizi: {
     borderRadius: Border.br_base,
@@ -536,7 +533,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttons: {
-    flexDirection: 'row',
+    borderRadius: 10,
+    top: '2%',
+    left: '2%',
+    height: 30,
+    width: 50,
+    position: 'absolute',
+    backgroundColor: Color.honeydew,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

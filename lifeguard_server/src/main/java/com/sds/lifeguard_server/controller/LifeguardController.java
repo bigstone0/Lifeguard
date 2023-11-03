@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class LifeguardController{
 
+    boolean flag=false;
     @Autowired
     LifeguardRepository lifeguardRepository;
 
@@ -47,14 +48,27 @@ public class LifeguardController{
     }
 
     @GetMapping("/lifeguard/doorclose")
-    public void Close(@RequestParam String name,@RequestParam String doorState) throws Exception {
+    public void Close(@RequestParam String name,@RequestParam String doorState,@RequestParam String innerState) throws Exception {
         lifeguardRepository.doorclose(name,doorState);
-//        if(doorState.equals("open")){
-//            sendOpenService.open();
-//        }
-//        else if(doorState.equals("closed")){
-//            sendCloseService.close();
-//        }
+        if(doorState.equals("open")){
+            sendOpenService.open();
+        }
+        else if(doorState.equals("closed")){
+            lifeguardRepository.innerchange(name,innerState);
+            sendCloseService.close();
+        }
+        System.out.println("name="+name+"state"+doorState);
+    }
+
+    @GetMapping("/lifeguard/serverdoorclose")
+    public void serverClose(@RequestParam String name,@RequestParam String doorState) throws Exception {
+        lifeguardRepository.doorclose(name,doorState);
+        if(doorState.equals("open")){
+            sendOpenService.open();
+        }
+        else if(doorState.equals("closed")){
+            sendCloseService.close();
+        }
         System.out.println("name="+name+"state"+doorState);
     }
 
@@ -62,13 +76,42 @@ public class LifeguardController{
     public void Video(@RequestParam String name,@RequestParam String video) throws Exception{
         sendVideoService.video(video);
         lifeguardRepository.currentvideo(video,name);
+        System.out.println(video);
     }
 
     @GetMapping("/lifeguard/alldooropen")
-    public List<String> allOpen() throws Exception{
+    public List<String> allOpen(@RequestParam String video) throws Exception{
         lifeguardRepository.allopen("open");
-//        sendAllOpenService.allopen();
+        flag=false;
+        sendVideoService.video(video);
+        sendAllOpenService.allopen(video);
         List<String> d_status=lifeguardRepository.selectdoorstatus();
         return d_status;
+    }
+
+    @GetMapping("/lifeguard/alldooropen1")
+    public List<String> allOpen1(@RequestParam String video) throws Exception{
+        lifeguardRepository.allopen("open");
+        flag=true;
+        sendVideoService.video(video);
+        sendAllOpenService.allopen(video);
+        List<String> d_status=lifeguardRepository.selectdoorstatus();
+        return d_status;
+    }
+
+    @GetMapping("/lifeguard/alldoorclosed")
+    public List<String> allClosed(@RequestParam String video) throws Exception{
+        lifeguardRepository.allopen("closed");
+        flag=true;
+        sendVideoService.video(video);
+        sendAllCloseService.allclose(video);
+        List<String> d_status=lifeguardRepository.selectdoorstatus();
+        return d_status;
+    }
+
+    @GetMapping("/lifeguard/checkWarning")
+    public boolean checkwarning(){
+        System.out.println(flag);
+        return flag;
     }
 }

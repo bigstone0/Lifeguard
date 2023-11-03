@@ -34,7 +34,6 @@ function SignIn() {
       );
       console.log(user);
       setUser(user.user);
-      alert(user.user.email);
       navigate("/SignageList");
     } catch (error) {
       alert("check id or password");
@@ -57,7 +56,7 @@ function SignIn() {
 
         <div className="LoginInput">
           <div className="InputComponents">
-            <p>Id</p>
+            <p>Email</p>
             <input
               type="text"
               onChange={(e) => {

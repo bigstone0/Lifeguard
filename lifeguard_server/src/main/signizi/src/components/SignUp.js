@@ -70,7 +70,7 @@ function SignUp() {
         <div className="Horizontal">
           <div className="Vertical">
             <div className="InputComponents">
-              <p>Id</p>
+              <p>Email</p>
               <input
                 type="text"
                 onChange={(e) => {
@@ -86,6 +86,10 @@ function SignUp() {
                 }}
                 placeholder="6자리 이상"
               />
+            </div>
+          </div>
+          <div className="Vertical">
+            <div className="InputComponents">
               <p>User name</p>
               <input
                 type="text"
@@ -94,10 +98,6 @@ function SignUp() {
                 }}
                 placeholder="사용자 이름"
               ></input>
-            </div>
-          </div>
-          <div className="Vertical">
-            <div className="InputComponents">
               <p>Phone Number</p>
               <input
                 type="text"
@@ -105,14 +105,6 @@ function SignUp() {
                   Setphone(e.target.value);
                 }}
                 placeholder="000-0000-0000"
-              ></input>
-              <p>E-mail</p>
-              <input
-                type="text"
-                onChange={(e) => {
-                  Setemail(e.target.value);
-                }}
-                placeholder="이메일 형식"
               ></input>
             </div>
           </div>

@@ -3,21 +3,12 @@ package com.sds.lifeguard_server.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class sendAllOpenService {
-    public static void allopen(String video) throws Exception{
+public class sendAllCloseService {
+    public static void allclose(String video) throws Exception{
         ProcessBuilder builder;
         BufferedReader br;
 
-        if(video.equals("safety_rulse.mp4")){
-            builder=new ProcessBuilder("python3","send_args.py","s");
-        } else if (video.equals("caution_level.mp4")) {
-            builder=new ProcessBuilder("python3","send_args.py","l");
-        } else if (video.equals("alert_level.mp4")) {
-            builder = new ProcessBuilder("python3", "send_args.py", "m");
-        } else {
-            System.out.println("fail");
-            return;
-        }
+        builder=new ProcessBuilder("python3","send_args.py","h");
 
         builder.redirectErrorStream(true);
 
