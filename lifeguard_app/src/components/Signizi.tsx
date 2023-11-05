@@ -97,7 +97,7 @@ const Signizi = ({route, navigation}: any) => {
 
   const flag_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/checkWarning')
+      .get('http://192.168.193.19:8080/lifeguard/checkWarning')
       .then(response => setflag(response.data))
       .catch(error => {
         console.log(error);
@@ -106,7 +106,7 @@ const Signizi = ({route, navigation}: any) => {
 
   const d_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/namedoorState', {
+      .get('http://192.168.193.19:8080/lifeguard/namedoorState', {
         params: {
           name: name,
         },
@@ -119,7 +119,7 @@ const Signizi = ({route, navigation}: any) => {
 
   const i_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/nameinnerState', {
+      .get('http://192.168.193.19:8080/lifeguard/nameinnerState', {
         params: {
           name: name,
         },
@@ -166,7 +166,7 @@ const Signizi = ({route, navigation}: any) => {
 
   const doorSwitch = (door_s: any, inner_s: any) => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/doorclose', {
+      .get('http://192.168.193.19:8080/lifeguard/doorclose', {
         params: {
           name: name,
           doorState: door_s,
@@ -291,7 +291,6 @@ const Signizi = ({route, navigation}: any) => {
           <View style={styles.warningourier}>
             <Text style={[styles.text1, styles.warningtextTypo]}>
               {'Warning!!'}
-              {inner}
             </Text>
           </View>
         </View>

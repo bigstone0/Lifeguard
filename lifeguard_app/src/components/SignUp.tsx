@@ -39,7 +39,7 @@ const SignUp = ({navigation}: {navigation: any}) => {
 
   const userdata = () => {
     axios
-      .get('http://10.0.2.2:8080/sign/userSignUp', {
+      .get('http://192.168.193.19:8080/sign/userSignUp', {
         params: {
           id: input_email,
           pw: input_password,

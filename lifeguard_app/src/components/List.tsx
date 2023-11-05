@@ -38,7 +38,7 @@ const List = ({navigation}: {navigation: any}) => {
 
   const d_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/doorState')
+      .get('http://192.168.193.19:8080/lifeguard/doorState')
       .then(response => setdoor_state(response.data))
       .catch(error => {
         console.log(error);
@@ -47,7 +47,7 @@ const List = ({navigation}: {navigation: any}) => {
 
   const i_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/innerState')
+      .get('http://192.168.193.19:8080/lifeguard/innerState')
       .then(response => setinner_state(response.data))
       .catch(error => {
         console.log(error);
@@ -56,7 +56,7 @@ const List = ({navigation}: {navigation: any}) => {
 
   const n_state = () => {
     axios
-      .get('http://192.168.193.20:8080/lifeguard/name')
+      .get('http://192.168.193.19:8080/lifeguard/name')
       .then(response => setName(response.data))
       .catch(error => {
         console.log(error);
@@ -191,15 +191,15 @@ const styles = StyleSheet.create({
     top: windowHeight - 1000,
   },
   signizi_rectangle2: {
-    top: windowHeight - 500,
+    top: windowHeight - 800,
     backgroundColor: Color.lightgray,
   },
   signizi_rectangle3: {
-    top: windowHeight - 350,
+    top: windowHeight - 600,
     backgroundColor: Color.lightgray,
   },
   signizi_rectangle4: {
-    top: windowHeight - 200,
+    top: windowHeight - 400,
     backgroundColor: Color.lightgray,
   },
   signizi_rectangle_layout: {

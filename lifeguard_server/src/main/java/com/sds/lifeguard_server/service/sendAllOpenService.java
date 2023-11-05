@@ -8,7 +8,7 @@ public class sendAllOpenService {
         ProcessBuilder builder;
         BufferedReader br;
 
-        if(video.equals("safety_rulse.mp4")){
+        if(video.equals("open.mp4")){
             builder=new ProcessBuilder("python3","send_args.py","s");
         } else if (video.equals("caution_level.mp4")) {
             builder=new ProcessBuilder("python3","send_args.py","l");
