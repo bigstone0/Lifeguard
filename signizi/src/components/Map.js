@@ -11,7 +11,7 @@ function Map() {
       <p>maps</p>
       <Wrapper>
         <LoadScriptNext
-          googleMapsApiKey={"AIzaSyBB-wLhUTOStCMyM-2nfPgA_5ddE_k8wOw"}
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_KEY}
         >
           <GoogleMap
             zoom={15}
