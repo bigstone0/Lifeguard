@@ -1,5 +1,5 @@
 ---
-name: 이슈 생성 템플릿
+name: Feature Template
 about: 이슈 템플릿을 사용하여 이슈를 작성해주세요
 title: "[FEAT]"
 labels: enhancement
