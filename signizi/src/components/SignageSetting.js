@@ -183,7 +183,7 @@ function SignageSetting() {
           <div className="Vertical">
             <Wrapper>
               <LoadScriptNext
-                googleMapsApiKey={"AIzaSyBI2WU1RZr3FTqlW81ih4OvP1S6V1vbZPU"}
+                googleMapsApiKey={"AIzaSyBanJucK4ssBh_ZsNlLDjfxcV0IGJJvwnk"}
               >
                 <GoogleMap
                   zoom={15}
